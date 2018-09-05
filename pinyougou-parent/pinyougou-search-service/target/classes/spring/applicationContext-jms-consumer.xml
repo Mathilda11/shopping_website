@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:amq="http://activemq.apache.org/schema/core"
+	xmlns:jms="http://www.springframework.org/schema/jms"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context   
+		http://www.springframework.org/schema/context/spring-context.xsd">
+	
+    <!-- 真正可以产生Connection的ConnectionFactory，由对应�? JMS服务厂商提供-->  
+	<bean id="targetConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">  
+	    <property name="brokerURL" value="tcp://192.168.25.128:61616"/>  
+	</bean>
+	   
+    <!-- Spring用于管理真正的ConnectionFactory的ConnectionFactory -->  
+	<bean id="connectionFactory" class="org.springframework.jms.connection.SingleConnectionFactory">  
+	<!-- 目标ConnectionFactory对应真实的可以产生JMS Connection的ConnectionFactory -->  
+	    <property name="targetConnectionFactory" ref="targetConnectionFactory"/>  
+	</bean>  
+	
+    <!--这个是队列目的地，导入索引库-->  
+	<bean id="queueSolrDestination" class="org.apache.activemq.command.ActiveMQQueue">  
+	    <constructor-arg value="pinyougou_queue_solr"/>  
+	</bean>    
+	
+	<!-- 消息监听容器  导入索引�?-->
+	<bean class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="destination" ref="queueSolrDestination" />
+		<property name="messageListener" ref="itemSearchListener" />
+	</bean>
+	
+	<!--这个是队列目的地，从索引库删�?-->  
+	<bean id="queueSolrDeleteDestination" class="org.apache.activemq.command.ActiveMQQueue">  
+	    <constructor-arg value="pinyougou_queue_solr_delete"/>  
+	</bean>    
+	
+	<!-- 消息监听容器  从索引库删除-->
+	<bean class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="destination" ref="queueSolrDeleteDestination" />
+		<property name="messageListener" ref="itemDeleteListener" />
+	</bean>
+	
+	
+</beans>
