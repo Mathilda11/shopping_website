@@ -58,4 +58,4 @@ RateLimiter是Guava提供的基于令牌桶算法的实现类，可以非常简�
 本次采用的是非阻塞等待令牌。
 1秒钟产生10枚令牌，判断能否在1秒内得到令牌，如果不能则立即返回false，不会阻塞程序。  
 
-😆更多秒杀系统设计的思路/方法：
+😆更多秒杀系统设计的思路/方法：[关于秒杀系统的一些设计思路](https://github.com/Mathilda11/Java-Notes/blob/master/MD/SystemDesign/%E5%85%B3%E4%BA%8E%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF.md)
